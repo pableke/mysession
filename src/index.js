@@ -2,7 +2,7 @@
 //required node modeules
 const url = require("url"); //url parser
 const http = require("http"); //http server
-const session = require("./mysession"); //server DOM parser
+const session = require("./mysession"); //session handler
 
 // Settings
 session.open();
