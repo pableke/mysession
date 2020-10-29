@@ -4,57 +4,77 @@ Handler for multiple client sessions
 
 ## How It Works
 
-1. Build a tree directory structure as user definition.
-2. Load / store data according previous structure.
+1. Build a session container by calculated client key.
+2. Restoro data previously stored.
 
 ## Usage
 
 ### JS Applications
 
-Suitable for applications that have their own database control.
+Session control for webapps.
 
 <details><summary><b>Show instructions</b></summary>
 
 1. Install by npm:
 
     ```sh
-    $ npm install myjson-box
+    $ npm install mysession
     ```
 
 </details>
 
 ## Config
 
-MyJson auto read ./dbs/ directory to load/store databases
+MySession handle coocies, exiperd sessions, etc.
 
 1. myjson.create():
 
    ```
-    const myjson = require("myjson-box")
+    const url = require("url"); //url parser
+    const http = require("http"); //http server
+    const session = require("./mysession"); //server DOM parser
 
-    myjson.open().then(dbs => {
-        console.log("-------", "DataBases", "-------");
-        console.log(dbs);
-        return dbs.company.create("menus");
-    }).then(menus => {
-        console.log("-------", "MENUS", "-------");
-        console.log(menus);
-        menus.save({_id:2, href: "#top", text: "anchor"});
-        return menus.get("users");
-    }).then(users => {
-        console.log("-------", "USERS", "-------");
-        console.log(users);
-        console.log("-------", "USER (5)", "-------");
-        return users.deleteById(5);
-    }).then(users => {
-        console.log(users.findById(2));
+    // Settings
+    session.open({
+        cookieName: "SESSION", //name cookie
+        maxage: 1000 * 60 * 60 //1h in miliseconds
     });
 
-    myjson.create("test").then(test => {
-        return test.create("products");
-    }).then(products => {
-        products.save({_id:1,name:"laptop", price:99.32});
+    //create server instance
+    const server = http.createServer(function(req, res) {
+        let parts = url.parse(req.url.toLowerCase(), true); //parse url
+        let pathname = parts.pathname; //https://example.org/abc/xyz?123 = /abc/xyz
+        //Static request => res.end()
+        if (pathname.indexOf("/favicon.ico") > -1)
+            return res.end(); //ignore icon request
+
+        session.init(req, res);
+        console.log(req.session);
+        res.end(JSON.stringify(req.session), "application/json", () => {
+            console.log(">", req.url, req.method, (Date.now() - req.session.mtime) + " ms");
+        });
     });
+
+    //capture Node.js Signals and Events
+    function fnExit(signal) { //exit handler
+        console.log("------------------");
+        console.log("> Received [" + signal + "].");
+        session.close();
+        server.close();
+        console.log("> Http server closed.");
+        console.log("> " + (new Date()));
+        process.exit(0);
+    };
+    server.on("close", fnExit); //close server event
+    process.on("exit", function() { fnExit("exit"); }); //common exit signal
+    process.on("SIGHUP", function() { fnExit("SIGHUP"); }); //generated on Windows when the console window is closed
+    process.on("SIGINT", function() { fnExit("SIGINT"); }); //Press Ctrl-C / Ctrl-D keys to exit
+    process.on("SIGTERM", function() { fnExit("SIGTERM"); }); //kill the server using command kill [PID_number] or killall node
+    process.stdin.on("data", function(data) { (data == "exit\n") && fnExit("exit"); }); //console exit
+
+    //start http and https server
+    let port = process.env.port || 3000;
+    server.listen(port, "localhost");
    ```
 
 ### test
