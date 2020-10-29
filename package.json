@@ -1,0 +1,31 @@
+{
+  "name": "mysession",
+  "version": "1.0.0",
+  "description": "HTTP web sessions handler",
+  "main": "mysession.js",
+  "scripts": {
+    "dev": "nodemon ./src/index.js",
+    "zip": "rm mysession.zip & npm-pack-zip",
+    "test": "node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pableke/mysession.git"
+  },
+  "keywords": [
+    "session",
+    "web",
+    "webapp",
+    "http"
+  ],
+  "author": "Pablo Rosique Vidal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pableke/mysession/issues"
+  },
+  "homepage": "https://github.com/pableke/mysession#readme",
+  "dependencies": {
+    "nodemon": "^2.0.6",
+    "npm-pack-zip": "^1.2.7"
+  }
+}
