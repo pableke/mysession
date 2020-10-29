@@ -1,8 +1,8 @@
 {
   "name": "mysession",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "HTTP web sessions handler",
-  "main": "mysession.js",
+  "main": "./src/mysession.js",
   "scripts": {
     "dev": "nodemon ./src/index.js",
     "zip": "rm mysession.zip & npm-pack-zip",
