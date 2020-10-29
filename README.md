@@ -18,7 +18,7 @@ Session control for webapps.
 
 1. Install by npm:
 
-    ```sh
+    ```
     $ npm install mysession
     ```
 
