@@ -5,7 +5,7 @@
   "main": "./src/mysession.js",
   "scripts": {
     "dev": "nodemon ./src/index.js",
-    "zip": "rm mysession.zip & npm-pack-zip",
+    "zip": "rm *.zip & rm *.tgz & npm-pack-zip",
     "test": "node ./src/index.js"
   },
   "repository": {
